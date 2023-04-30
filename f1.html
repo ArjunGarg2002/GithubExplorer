@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Github Explorer</title>
+	<link rel="stylesheet" type="text/css" href="frame.css">
+</head>
+<body>
+	<header>
+		<h1>Github Explorer</h1>
+		<input type="text" id="search-bar" placeholder="Search for a user">
+		<button id="search-button">Search</button>
+	</header>
+
+	<main>
+		<div id="results-container"></div>
+	</main>
+
+	<script src="script.js"></script>
+</body>
+</html>
+<script>
+	const searchBar = document.getElementById('search-bar');
+const searchButton = document.getElementById('search-button');
+const resultsContainer = document.getElementById('results-container');
+
+searchButton.addEventListener('click', () => {
+	const username = searchBar.value;
+	fetch(`https://api.github.com/users/${username}`)
+		.then(response => response.json())
+		.then(data => {
+			resultsContainer.innerHTML = `
+				<div>
+					<img src="${data.avatar_url}" alt="${data.login}">
+					<h2>${data.login}</h2>
+					<p>${data.bio || ''}</p>
+					<ul>
+						<li>Followers: ${data.followers}</li>
+						<li>Following: ${data.following}</li>
+						<li>Public repos: ${data.public_repos}</li>
+					</ul>
+				</div>
+			`;
+		})
+		.catch(error => {
+			resultsContainer.innerHTML = `<p>${error.message}</p>`;
+		});
+});
+</script>
